@@ -1,7 +1,6 @@
 import os
 from json import load
 from hashlib import sha256
-from multiprocessing import Pool
 
 
 with open('config.json', 'r') as file:
@@ -36,24 +35,17 @@ pl = []
 
 append = config.get('base', '')
 
-
-def download(url):
-    if url.startswith('#'):
-        return
-    url = append + url
-    h = sha256(url.encode()).hexdigest()[:8]
+print("Downloading plugins.")
+for i in config['plugins']:
+    if i.startswith('#'):
+        continue
+    i = append + i
+    h = sha256(i.encode()).hexdigest()[:8]
     name = f'{h}.jar'
     pl.append(name)
-    print(url, name)
     if not os.path.isfile(name):
-        os.system(f'wget -nv -O "{name}" "{url}"')
-
-
-
-print("Downloading plugins.")
-with Pool(10) as p:
-    p.map(download, config["plugins"])
-
+        os.system(f'wget -nv -O downloading.jar "{i}"')
+        os.rename('downloading.jar', f'{name}')
 
 pls = os.listdir()
 for p in pls:
@@ -71,8 +63,16 @@ if config.get('mods'):
     if os.path.isfile('downloading.jar'):
         os.remove('downloading.jar')
 
-    with Pool(10) as p:
-        p.map(download, config["mods"])
+    for i in config.get('mods'):
+        if i.startswith('#'):
+            continue
+        i = append + i
+        h = sha256(i.encode()).hexdigest()[:8]
+        name = f'{h}.jar'
+        pl.append(name)
+        if not os.path.isfile(name):
+            os.system(f'wget -nv -O downloading.jar "{i}"')
+            os.rename('downloading.jar', f'{name}')
     
     os.chdir('..')
 
