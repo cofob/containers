@@ -27,52 +27,35 @@ for p in os.listdir():
             os.remove(p)
 
 
-os.chdir("plugins")
-
-if os.path.isfile("downloading.jar"):
-    os.remove("downloading.jar")
-
-pl = []
-
-
-def download(i):
+def download(i, folder):
     append = config.get("base", "")
-    if url.startswith("#"):
+    if i.startswith("#"):
         return
     url = append + i
     h = sha256(url.encode()).hexdigest()[:8]
     name = f"{h}.jar"
-    pl.append(name)
     print(url, name)
     if not os.path.isfile(name):
-        os.system(f'wget -nv -O "{i}" "{url}"')
+        os.system(f'wget -nv -O "{folder}/{i}" "{url}"')
+
+
+def download_plugins(i):
+    return download(i, "plugins")
+
+
+def download_mods(i):
+    return download(i, "mods")
 
 
 print("Downloading plugins.")
 with Pool(10) as p:
-    p.map(download, config["plugins"])
-
-
-pls = os.listdir()
-for p in pls:
-    if p not in pl:
-        if os.path.isfile(p):
-            os.remove(p)
-
-os.chdir("..")
+    p.map(download_plugins, config["plugins"])
 
 
 if config.get("mods"):
     print("Downloading mods.")
-    os.chdir("mods")
-
-    if os.path.isfile("downloading.jar"):
-        os.remove("downloading.jar")
-
     with Pool(10) as p:
-        p.map(download, config["mods"])
-
-    os.chdir("..")
+        p.map(download_mods, config["mods"])
 
 
 if config.get("commands"):
