@@ -1,51 +1,57 @@
 import os
 from json import load
 from hashlib import sha256
+from multiprocessing import Pool
 
 
-with open('config.json', 'r') as file:
+with open("config.json", "r") as file:
     config = load(file)
 
-if not os.path.isdir('plugins'):
-    os.mkdir('plugins')
+if not os.path.isdir("plugins"):
+    os.mkdir("plugins")
 
-if not os.path.isdir('mods') and config.get("mods"):
-    os.mkdir('mods')
+if not os.path.isdir("mods") and config.get("mods"):
+    os.mkdir("mods")
 
 
 h = sha256(config["server"].encode()).hexdigest()[:8]
-name = f'server-{h}.jar'
+name = f"server-{h}.jar"
 
 if not os.path.isfile(name):
     print("Downloading server.")
     os.system(f'wget -nv -O {name} {config["server"]}')
 
 for p in os.listdir():
-    if p.startswith('server') and p.endswith('.jar'):
+    if p.startswith("server") and p.endswith(".jar"):
         if p != name:
             os.remove(p)
 
 
-os.chdir('plugins')
+os.chdir("plugins")
 
-if os.path.isfile('downloading.jar'):
-    os.remove('downloading.jar')
+if os.path.isfile("downloading.jar"):
+    os.remove("downloading.jar")
 
 pl = []
 
-append = config.get('base', '')
+
+def download(i):
+    append = config.get("base", "")
+    if url.startswith("#"):
+        return
+    url = append + i
+    h = sha256(url.encode()).hexdigest()[:8]
+    name = f"{h}.jar"
+    pl.append(name)
+    print(url, name)
+    if not os.path.isfile(name):
+        os.system(f'wget -nv -O "{i}" "{url}"')
+
 
 print("Downloading plugins.")
-for i in config['plugins']:
-    if i.startswith('#'):
-        continue
-    i = append + i
-    h = sha256(i.encode()).hexdigest()[:8]
-    name = f'{h}.jar'
-    pl.append(name)
-    if not os.path.isfile(name):
-        os.system(f'wget -nv -O downloading.jar "{i}"')
-        os.rename('downloading.jar', f'{name}')
+with Pool(10) as p:
+    p.map(download, config["plugins"])
+
 
 pls = os.listdir()
 for p in pls:
@@ -53,29 +59,20 @@ for p in pls:
         if os.path.isfile(p):
             os.remove(p)
 
-os.chdir('..')
+os.chdir("..")
 
 
-if config.get('mods'):
+if config.get("mods"):
     print("Downloading mods.")
-    os.chdir('mods')
+    os.chdir("mods")
 
-    if os.path.isfile('downloading.jar'):
-        os.remove('downloading.jar')
+    if os.path.isfile("downloading.jar"):
+        os.remove("downloading.jar")
 
-    for i in config.get('mods'):
-        if i.startswith('#'):
-            continue
-        i = append + i
-        h = sha256(i.encode()).hexdigest()[:8]
-        name = f'{h}.jar'
-        pl.append(name)
-        if not os.path.isfile(name):
-            os.system(f'wget -nv -O downloading.jar "{i}"')
-            os.rename('downloading.jar', f'{name}')
-    
-    os.chdir('..')
+    with Pool(10) as p:
+        p.map(download, config["mods"])
 
+    os.chdir("..")
 
 
 if config.get("commands"):
@@ -84,4 +81,4 @@ if config.get("commands"):
         os.system(command)
 
 
-print('Done.')
+print("Done.")
