@@ -33,6 +33,10 @@ if [[ -d "/home/container/.git" ]]; then
 			printf "\033[1m\033[33mcontainer@pterodactyl~ \033[0mrm -rf plugins/*.jar\n"
 			rm -rf plugins/*.jar
 		fi
+		if [[ -d "mods" ]]; then
+			printf "\033[1m\033[33mcontainer@pterodactyl~ \033[0mrm -rf mods/*.jar\n"
+			rm -rf mods/*.jar
+		fi
 	fi
 	printf "\033[1m\033[33mcontainer@pterodactyl~ \033[0mgit reset --hard\n"
 	git reset --hard
