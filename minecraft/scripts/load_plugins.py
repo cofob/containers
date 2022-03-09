@@ -2,7 +2,6 @@ import os
 from json import load
 from hashlib import sha256
 from multiprocessing import Pool
-from subprocess import Popen
 
 
 with open("config.json", "r") as file:
@@ -37,7 +36,7 @@ def download(i, folder):
     name = f"{h}.jar"
     print(url, name)
     if not os.path.isfile(name):
-        Popen(['wget', '-nv', '-O', f'{folder}/{i}', url])
+        os.system(f'wget -nv -O "{folder}/{i}" "{url}"')
 
 
 def download_plugins(i):
