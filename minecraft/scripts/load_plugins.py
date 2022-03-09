@@ -37,7 +37,7 @@ def download(i, folder):
     name = f"{h}.jar"
     print(url, name)
     if not os.path.isfile(name):
-        Popen('wget', '-nv', '-O', f'{folder}/{i}', url)
+        Popen(['wget', '-nv', '-O', f'{folder}/{i}', url])
 
 
 def download_plugins(i):
