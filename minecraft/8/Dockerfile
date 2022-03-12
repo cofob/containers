@@ -17,6 +17,6 @@ COPY        ./entrypoint.sh /entrypoint.sh
 COPY        ./load_plugins.py /load_plugins.py
 COPY        ./apply_secrets.py /apply_secrets.py
 
-ENV			STARTUP="java -jar server.jar"
+ENV			STARTUP="java -jar server.jar" STAGING=""
 
 CMD         [ "/bin/bash", "/entrypoint.sh" ]
