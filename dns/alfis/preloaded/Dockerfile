@@ -2,7 +2,7 @@
 FROM		alpine AS blockchain
 WORKDIR		/
 RUN			apk add --no-cache wget
-RUN			wget --inet4-only -O blockchain.db https://alfis.cofob.ru/blockchain.db
+RUN			wget --inet4-only -O blockchain.db https://viewer.alfis.name/blockchain.db
 
 # Final image
 FROM		ghcr.io/cofob/alfis:bare
