@@ -16,7 +16,7 @@ FROM		debian:bullseye-slim
 LABEL       author="cofob" maintainer="cofob@riseup.net"
 LABEL       org.opencontainers.image.source="https://github.com/cofob/containers"
 
-RUN			useradd -d /home/container -m container -g 5000 -u 5000
+RUN			groupadd -g 5000 container && useradd -d /home/container -m -g container -u 5000 container && mkdir /data && \
 
 USER		container
 ENV			USER=container HOME=/home/container
