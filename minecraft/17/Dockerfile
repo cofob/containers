@@ -6,7 +6,7 @@ LABEL       org.opencontainers.image.source="https://github.com/cofob/containers
 RUN 		apt-get update -y && \
 			apt-get install -y --no-install-recommends curl ca-certificates openssl tar fdupes \
 				sqlite3 fontconfig libfreetype6 tzdata iproute2 libstdc++6 python3 wget git && \
-			useradd -d /home/container -m container && mkdir /data && \
+			useradd -d /home/container -m container -g 5000 -u 5000 && mkdir /data && \
 			chown -R container:container /data && chmod -R 777 /data
 
 USER        container
