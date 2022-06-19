@@ -6,4 +6,4 @@ LABEL           org.opencontainers.image.source="https://github.com/cofob/contai
 RUN             apt-get update && apt-get install jq curl wget -y && \
                 wget https://github.com/gohugoio/hugo/releases/download/v0.101.0/hugo_extended_0.101.0_Linux-64bit.deb -O hugo.deb && \
                 dpkg -i hugo.deb && rm -f hugo.deb && \
-                npm install -g ipfs-car
+                npm install -g ipfs-car && npm install -g cloudflare-cli
