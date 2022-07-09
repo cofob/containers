@@ -20,6 +20,8 @@ RUN hg clone https://hg.nginx.org/nginx-quic   && \
 	auto/configure `nginx -V 2>&1 | sed "s/ \-\-/ \\\ \n\t--/g" | grep "\-\-" | grep -ve opt= -e param= -e build=` \
 					--build=nginx-quic --with-debug  \
 					--with-http_v3_module --with-stream_quic_module \
+					--with-http_realip_module --with-http_v2_module \
+					--with-http_sub_module \
 					--with-cc-opt="-I/src/boringssl/include" --with-ld-opt="-L/src/boringssl/build/ssl -L/src/boringssl/build/crypto" && \
 	make
 
