@@ -25,4 +25,7 @@ RUN hg clone https://hg.nginx.org/nginx-quic   && \
 
 FROM nginx:1.23.0
 
+LABEL       author="cofob" maintainer="cofob@riseup.net"
+LABEL       org.opencontainers.image.source="https://github.com/cofob/containers"
+
 COPY --from=build /src/nginx-quic/objs/nginx /usr/sbin
