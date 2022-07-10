@@ -1,0 +1,23 @@
+server {
+	include snippets/main-proxy;
+	server_name ds.2bu2t.ru ds.2buldzha2t.ru ds.frsqr.xyz discord.2buldzha2t.ru;
+	return 301 https://discord.gg/XGqfX9pG7w;
+}
+
+server {
+	include snippets/main-proxy;
+	server_name stats.2buldzha2t.ru stats.firesquare.ru;
+	return 301 https://main-stats.firesquare.ru$request_uri;
+}
+
+server {
+	include snippets/main-proxy;
+	server_name wiki.2buldzha2t.ru;
+	return 301 https://wiki.firesquare.ru$request_uri;
+}
+
+server {
+	include snippets/main-proxy;
+	server_name 2bu2t.ru 2bu2t.online 2buldzha2t.ru *.frsqr.xyz *.2bu2t.ru *.2bu2t.online *.2buldzha2t.ru;
+	return 301 https://firesquare.ru$request_uri;
+}

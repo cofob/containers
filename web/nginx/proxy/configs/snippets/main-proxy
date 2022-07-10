@@ -1,0 +1,5 @@
+listen 443 http3;
+listen 443 ssl;
+
+include snippets/main-ssl;
+include snippets/http3;

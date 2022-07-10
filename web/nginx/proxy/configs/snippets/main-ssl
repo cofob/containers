@@ -1,0 +1,2 @@
+ssl_certificate /ssl/frsqr.xyz/fullchain.cer;
+ssl_certificate_key /ssl/frsqr.xyz/frsqr.xyz.key;

@@ -1,0 +1,7 @@
+include snippets/main-proxy;
+
+location / {
+	proxy_pass https://diamond.z.frsqr.xyz;
+	include proxy_params;
+	include snippets/proxy-auth;
+}
