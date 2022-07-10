@@ -1,3 +1,4 @@
 ssl_certificate /ssl/cert.crt;
 ssl_certificate_key /ssl/cert.key;
 ssl_client_certificate rootCA.crt;
+ssl_verify_client on;
