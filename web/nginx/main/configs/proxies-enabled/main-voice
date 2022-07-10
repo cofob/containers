@@ -1,5 +1,0 @@
-server {
-	listen 5000 udp;
-	listen [::]:5000 udp;
-	proxy_pass diamond.z.frsqr.xyz:5000;
-}
