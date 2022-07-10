@@ -1,0 +1,5 @@
+server {
+	listen 5001 udp;
+	listen [::]:5001 udp;
+	proxy_pass diamond.z.frsqr.xyz:5001;
+}

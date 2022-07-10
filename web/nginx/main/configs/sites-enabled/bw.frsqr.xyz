@@ -1,0 +1,9 @@
+server {
+	server_name bw.frsqr.xyz;
+	include snippets/main-base;
+
+	location / {
+		proxy_pass http://localhost:9001;
+		include proxy_params;
+	}
+}

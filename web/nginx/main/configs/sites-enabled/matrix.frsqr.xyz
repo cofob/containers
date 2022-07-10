@@ -1,0 +1,9 @@
+server {
+	server_name matrix.frsqr.xyz;
+	include snippets/main-base;
+
+	location /_matrix {
+		proxy_pass http://localhost:8008;
+		include proxy_params;
+	}
+}
