@@ -6,4 +6,5 @@ location / {
 	include proxy_params;
 	include snippets/proxy-auth;
 	include snippets/http3;
+	include snippets/hsts;
 }

@@ -3,3 +3,4 @@ listen 443 http2 ssl;
 
 include snippets/main-ssl;
 include snippets/http3;
+include snippets/hsts;
