@@ -1,4 +1,5 @@
 server {
 	server_name bw.frsqr.xyz;
 	include snippets/main-base;
+include snippets/http3;
 }
