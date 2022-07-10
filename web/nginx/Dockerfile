@@ -52,3 +52,5 @@ RUN apt-get update && apt-get install libcmark-dev -y
 
 COPY --from=build /src/nginx-quic/objs/nginx /usr/sbin
 COPY --from=build /src/modules/ /etc/bundled/modules/
+COPY rootCA.crt /usr/local/share/ca-certificates/firesquare/rootCA.crt
+RUN update-ca-certificates
