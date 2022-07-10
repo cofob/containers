@@ -1,4 +1,5 @@
 include snippets/main-proxy;
+include snippets/brotli;
 
 location / {
 	proxy_pass https://diamond.z.frsqr.xyz;
