@@ -6,9 +6,9 @@ ENV			TZ=Europe/Moscow
 WORKDIR		/build
 RUN			go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 RUN			xcaddy build \
-				--with github.com/caddy-dns/cloudflare \
 				--with github.com/caddy-plugins/caddy-rate-limit \
-				--with github.com/ueffel/caddy-brotli
+				--with github.com/ueffel/caddy-brotli \
+				--with github.com/sillygod/cdp-cache
 
 
 # Final image
