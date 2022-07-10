@@ -1,3 +1,4 @@
 proxy_ssl_certificate /ssl/cert.crt;
 proxy_ssl_certificate_key /ssl/cert.key;
 proxy_ssl_trusted_certificate rootCA.crt;
+proxy_ssl_verify_depth 2;
