@@ -29,6 +29,13 @@ RUN git clone https://github.com/google/ngx_brotli.git
 
 RUN git clone https://github.com/ukarim/ngx_markdown_filter_module.git
 
+# Replace server tokens
+RUN cd nginx-quic && \
+	sed -i 's@"nginx/"@"-/"@g' src/core/nginx.h && \
+	sed -i 's@r->headers_out.server == NULL@0@g' src/http/ngx_http_header_filter_module.c && \
+	sed -i 's@r->headers_out.server == NULL@0@g' src/http/v2/ngx_http_v2_filter_module.c && \
+	sed -i 's@<hr><center>nginx</center>@<hr><center>firesquare</center>@g' src/http/ngx_http_special_response.c
+
 RUN cd nginx-quic && \
 	auto/configure `nginx -V 2>&1 | sed "s/ \-\-/ \\\ \n\t--/g" | grep "\-\-" | grep -ve opt= -e param= -e build=` \
 					--build=nginx-quic --with-debug  \
