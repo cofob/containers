@@ -3,7 +3,7 @@ server {
 
 	include snippets/main-proxy;
 	include snippets/brotli;
-	add_header X-Cache-Status $upstream_cache_status;
+	include snippets/cache-status;
 
 	location / {
 		include snippets/main-pass;
