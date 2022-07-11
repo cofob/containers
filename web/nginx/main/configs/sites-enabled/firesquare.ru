@@ -6,4 +6,6 @@ server {
 		proxy_pass http://localhost:9002;
 		include proxy_params;
 	}
+
+	
 }

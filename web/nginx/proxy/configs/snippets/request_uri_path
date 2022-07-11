@@ -1,0 +1,3 @@
+map $request_uri $request_uri_path {
+  "~^(?P<path>[^?]*)(\?.*)?$"  $path;
+}

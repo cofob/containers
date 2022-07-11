@@ -2,9 +2,5 @@ include snippets/main-proxy;
 include snippets/brotli;
 
 location / {
-	proxy_pass https://10.1.0.81;
-	include proxy_params;
-	include snippets/proxy-auth;
-	include snippets/http3;
-	include snippets/hsts;
+	include snippets/main-pass;
 }
