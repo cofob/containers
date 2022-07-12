@@ -1,5 +1,0 @@
-location ~* \.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|css|rss|atom|js|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
-	include snippets/proxy;
-	include snippets/cache;
-	proxy_cache_key $scheme$proxy_host$request_uri_path;
-}
