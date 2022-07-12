@@ -3,3 +3,5 @@ include snippets/listen;
 location / {
 	include snippets/proxy;
 }
+
+include snippets/default_cache;
