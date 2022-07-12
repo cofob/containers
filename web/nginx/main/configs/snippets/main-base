@@ -1,3 +1,0 @@
-listen 443 http2 ssl;
-
-include snippets/main-ssl;

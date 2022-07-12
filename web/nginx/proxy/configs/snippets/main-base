@@ -1,8 +1,0 @@
-include snippets/main-proxy;
-include snippets/brotli;
-
-include snippets/cache-status;
-
-location / {
-	include snippets/main-pass;
-}
