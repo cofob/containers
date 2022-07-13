@@ -1,2 +1,1 @@
-more_clear_headers Server;
-more_set_headers "Server: firesquare";
+add_header Server 'firesquare' always;

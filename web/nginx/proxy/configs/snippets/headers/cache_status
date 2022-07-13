@@ -1,1 +1,1 @@
-more_set_headers "X-Cache-Status: $upstream_cache_status";
+add_header X-Cache-Status $upstream_cache_status always;

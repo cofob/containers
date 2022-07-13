@@ -1,1 +1,1 @@
-more_set_headers "X-Rate-Limit: $limit_req_status";
+add_header X-Rate-Limit $limit_req_status always;
