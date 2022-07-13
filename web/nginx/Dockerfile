@@ -85,7 +85,7 @@ RUN \
   apk add --no-cache --virtual .build-deps \
     git \
   # ngx_http_geoip2_module needs libmaxminddb-dev
-  && apk add --no-cache libmaxminddb-dev \
+  && apk add --no-cache libmaxminddb-dev sed \
   \
   && git clone --depth 1 --branch ${GEOIP2_VERSION} https://github.com/leev/ngx_http_geoip2_module /ngx_http_geoip2_module \
   && apk del .build-deps
