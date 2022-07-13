@@ -1,1 +1,1 @@
-more_set_headers 'Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"';
+more_set_headers 'Strict-Transport-Security: max-age=63072000; includeSubDomains; preload';
