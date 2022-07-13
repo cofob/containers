@@ -1,9 +1,9 @@
 # https://github.com/vickeyrao/docker-nginx-quic
 # https://hg.nginx.org/nginx-quic/file/tip/src/core/nginx.h
-ARG NGINX_VERSION=1.23.0
+ARG NGINX_VERSION=1.21.7
 
 # https://hg.nginx.org/nginx-quic/shortlog/quic
-ARG NGINX_COMMIT=5da2c0902e8e
+ARG NGINX_COMMIT=ce6d9cf0f567
 
 # https://github.com/google/ngx_brotli
 ARG NGX_BROTLI_COMMIT=9aec15e2aa6feea2113119ba06460af70ab3ea62
@@ -112,9 +112,6 @@ RUN \
 	echo "Cloning nginx $NGINX_VERSION (rev $NGINX_COMMIT from 'quic' branch) ..." \
 	&& hg clone -b quic --rev $NGINX_COMMIT https://hg.nginx.org/nginx-quic /usr/src/nginx-$NGINX_VERSION \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& sed -i 's@"nginx/"@"-/"@g' src/core/nginx.h \
-	&& sed -i 's@r->headers_out.server == NULL@0@g' src/http/ngx_http_header_filter_module.c \
-	&& sed -i 's@r->headers_out.server == NULL@0@g' src/http/v2/ngx_http_v2_filter_module.c \
 	&& sed -i 's@<hr><center>nginx</center>@<hr><center>firesquare</center>@g' src/http/ngx_http_special_response.c
 
 RUN \
@@ -150,7 +147,10 @@ RUN \
   echo "Building nginx ..." \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& ./auto/configure $CONFIG \
-	&& make -j$(getcohttps://raw.githubusercontent.com/vickeyrao/docker-nginx-quic/master/Dockerfile-$NGINX_VERSION \
+	&& make -j$(getconf _NPROCESSORS_ONLN)
+
+RUN \
+	cd /usr/src/nginx-$NGINX_VERSION \
 	&& make install \
 	&& rm -rf /etc/nginx/html/ \
 	&& mkdir /etc/nginx/conf.d/ \
