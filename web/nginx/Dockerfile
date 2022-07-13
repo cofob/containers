@@ -112,6 +112,7 @@ RUN \
 	echo "Cloning nginx $NGINX_VERSION (rev $NGINX_COMMIT from 'quic' branch) ..." \
 	&& hg clone -b quic --rev $NGINX_COMMIT https://hg.nginx.org/nginx-quic /usr/src/nginx-$NGINX_VERSION \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
+	&& ls \
 	&& sed -i 's@"nginx/"@"-/"@g' src/core/nginx.h \
 	&& sed -i 's@r->headers_out.server == NULL@0@g' src/http/ngx_http_header_filter_module.c \
 	&& sed -i 's@r->headers_out.server == NULL@0@g' src/http/v2/ngx_http_v2_filter_module.c \
