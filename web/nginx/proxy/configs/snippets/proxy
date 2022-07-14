@@ -1,2 +1,2 @@
-proxy_pass http://10.1.0.81;
+proxy_pass http://10.2.0.2;
 include proxy_params;
