@@ -162,7 +162,7 @@ ENV NGINX_COMMIT $NGINX_COMMIT
 COPY --from=base /tmp/runDeps.txt /tmp/runDeps.txt
 COPY --from=base /etc/nginx /etc/nginx
 COPY --from=base /usr/lib/nginx/modules/*.so /usr/lib/nginx/modules/
-COPY --from=base /usr/local/lib64/lib*.so.* /usr/lib/
+#COPY --from=base /usr/local/lib64/lib*.so.* /usr/lib/
 COPY --from=base /usr/sbin/nginx /usr/sbin/
 COPY --from=base /usr/local/lib/perl5/site_perl /usr/local/lib/perl5/site_perl
 COPY --from=base /usr/bin/envsubst /usr/local/bin/envsubst
