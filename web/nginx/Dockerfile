@@ -1,8 +1,8 @@
 # https://hg.nginx.org/nginx/file/tip/src/core/nginx.h
-ARG NGINX_VERSION=1.23.1
+ARG NGINX_VERSION=1.23.0
 
 # https://hg.nginx.org/nginx/shortlog
-ARG NGINX_COMMIT=069a4813e8d6
+ARG NGINX_COMMIT=5da2c0902e8e
 
 # https://github.com/google/ngx_brotli
 ARG NGX_BROTLI_COMMIT=9aec15e2aa6feea2113119ba06460af70ab3ea62
@@ -102,7 +102,7 @@ WORKDIR /usr/src/
 
 RUN \
 	echo "Cloning nginx $NGINX_VERSION (rev $NGINX_COMMIT) ..." \
-	&& hg clone --rev $NGINX_COMMIT https://hg.nginx.org/nginx /usr/src/nginx-$NGINX_VERSION \
+	&& hg clone --rev release-$NGINX_VERSION https://hg.nginx.org/nginx /usr/src/nginx-$NGINX_VERSION \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& sed -i 's@<hr><center>nginx</center>@<hr><center>firesquare</center>@g' src/http/ngx_http_special_response.c
 
