@@ -56,7 +56,6 @@ ARG CONFIG="\
 		--with-compat \
 		--with-file-aio \
 		--with-http_v2_module \
-		--with-http_v3_module \
 		--add-module=/usr/src/ngx_brotli \
 		--add-module=/usr/src/headers-more-nginx-module-$HEADERS_MORE_VERSION \
 		--add-dynamic-module=/ngx_http_geoip2_module \
