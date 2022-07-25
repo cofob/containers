@@ -1,22 +1,17 @@
-# https://github.com/vickeyrao/docker-nginx-quic
-# https://hg.nginx.org/nginx-quic/file/tip/src/core/nginx.h
-ARG NGINX_VERSION=1.21.7
+# https://hg.nginx.org/nginx/file/tip/src/core/nginx.h
+ARG NGINX_VERSION=1.23.1
 
-# https://hg.nginx.org/nginx-quic/shortlog/quic
-ARG NGINX_COMMIT=ce6d9cf0f567
+# https://hg.nginx.org/nginx/shortlog
+ARG NGINX_COMMIT=069a4813e8d6
 
 # https://github.com/google/ngx_brotli
 ARG NGX_BROTLI_COMMIT=9aec15e2aa6feea2113119ba06460af70ab3ea62
 
-# https://github.com/quictls/openssl
-ARG QUICTLS_COMMIT=ab8b87bdb436b11bf2a10a2a57a897722224f828
-
 # https://github.com/openresty/headers-more-nginx-module#installation
 ARG HEADERS_MORE_VERSION=0.33
 
-# https://hg.nginx.org/nginx-quic/file/quic/README#l72
 ARG CONFIG="\
-		--build=quic-$NGINX_COMMIT-quictls-$QUICTLS_COMMIT \
+		--build=$NGINX_COMMIT \
 		--prefix=/etc/nginx \
 		--sbin-path=/usr/sbin/nginx \
 		--modules-path=/usr/lib/nginx/modules \
@@ -51,7 +46,6 @@ ARG CONFIG="\
 		--with-http_perl_module=dynamic \
 		--with-threads \
 		--with-stream \
-		--with-stream_quic_module \
 		--with-stream_ssl_module \
 		--with-stream_ssl_preread_module \
 		--with-stream_realip_module \
@@ -76,7 +70,6 @@ ARG NGINX_COMMIT
 ARG NGX_BROTLI_COMMIT
 ARG HEADERS_MORE_VERSION
 ARG CONFIG
-ARG QUICTLS_COMMIT
 
 # https://github.com/leev/ngx_http_geoip2_module/releases
 ARG GEOIP2_VERSION=3.3
@@ -109,8 +102,8 @@ RUN \
 WORKDIR /usr/src/
 
 RUN \
-	echo "Cloning nginx $NGINX_VERSION (rev $NGINX_COMMIT from 'quic' branch) ..." \
-	&& hg clone -b quic --rev $NGINX_COMMIT https://hg.nginx.org/nginx-quic /usr/src/nginx-$NGINX_VERSION \
+	echo "Cloning nginx $NGINX_VERSION (rev $NGINX_COMMIT) ..." \
+	&& hg clone --rev $NGINX_COMMIT https://hg.nginx.org/nginx /usr/src/nginx-$NGINX_VERSION \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& sed -i 's@<hr><center>nginx</center>@<hr><center>firesquare</center>@g' src/http/ngx_http_special_response.c
 
@@ -123,19 +116,6 @@ RUN \
 	&& git fetch --depth 1 origin $NGX_BROTLI_COMMIT \
 	&& git checkout --recurse-submodules -q FETCH_HEAD \
 	&& git submodule update --init --depth 1
-
-RUN \
-  echo "Cloning quictls ..." \
-  && cd /usr/src \
-  && git clone https://github.com/quictls/openssl \
-  && cd openssl \
-  && git checkout $QUICTLS_COMMIT
-
-RUN \
-  echo "Building quictls ..." \
-  && cd /usr/src/openssl \
-  && ./Configure \
-  && make install_dev -j$(getconf _NPROCESSORS_ONLN)
 
 RUN \
   echo "Downloading headers-more-nginx-module ..." \
