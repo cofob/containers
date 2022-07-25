@@ -8,7 +8,7 @@ ARG NGINX_COMMIT=5da2c0902e8e
 ARG NGX_BROTLI_COMMIT=9aec15e2aa6feea2113119ba06460af70ab3ea62
 
 # https://github.com/openresty/headers-more-nginx-module#installation
-ARG HEADERS_MORE_VERSION=0.33
+ARG HEADERS_MORE_VERSION=0.34
 
 ARG CONFIG="\
 		--build=$NGINX_COMMIT \
