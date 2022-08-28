@@ -1,0 +1,7 @@
+FROM            nixos/nix
+
+LABEL           author="cofob" maintainer="cofob@riseup.net"
+LABEL           org.opencontainers.image.source="https://github.com/cofob/containers"
+
+COPY src/ .
+RUN cd src && nix-build -A docs.html && cd .. && rm -rf src
