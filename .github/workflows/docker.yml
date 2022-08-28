@@ -6,7 +6,7 @@ on:
       - master
   workflow_dispatch:
   schedule:
-    - cron: 0 */3 * * * # update containers every 3rd hour
+    - cron: 0 0 */10 * *
 
 jobs:
   setup:
