@@ -3,5 +3,4 @@ FROM            nixos/nix
 LABEL           author="cofob" maintainer="cofob@riseup.net"
 LABEL           org.opencontainers.image.source="https://github.com/cofob/containers"
 
-COPY src/ .
-RUN ls && cd data && nix-build -A docs.html || true && cd .. && rm -rf data
+RUN nix-shell -p git && git clone https://git.frsqr.xyz/firesquare/mineflake && cd mineflake && nix-build -A docs.html && cd .. && rm -rf mineflake
