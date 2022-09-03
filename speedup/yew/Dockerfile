@@ -10,4 +10,4 @@ RUN rustup target add wasm32-unknown-unknown && \
     pip install css-html-js-minify && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get update && \
-    apt install nodejs npm -y
+    apt install nodejs -y
