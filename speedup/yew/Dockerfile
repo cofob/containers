@@ -9,4 +9,6 @@ RUN rustup target add wasm32-unknown-unknown && \
     apt-get install python3 python3-pip curl -y && \
     pip install css-html-js-minify
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-RUN nvm use 18
+RUN export NVM_DIR="$HOME/.nvm" && \
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
+    nvm use 18
