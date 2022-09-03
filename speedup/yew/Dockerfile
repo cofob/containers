@@ -6,10 +6,5 @@ RUN rustup target add wasm32-unknown-unknown && \
     chmod u+x trunk && \
     mv trunk /bin && \
     apt-get update && \
-    apt-get install git nodejs npm python3 python3-pip -y && \
-    git clone https://git.frsqr.xyz/firesquare/firesquare.ru-rs.git repo && \
-    cd repo && \
-    trunk build --release && \
-    cd .. && \
-    rm -rf repo && \
+    apt-get install nodejs npm python3 python3-pip -y && \
     pip install css-html-js-minify
