@@ -6,5 +6,7 @@ RUN rustup target add wasm32-unknown-unknown && \
     chmod u+x trunk && \
     mv trunk /bin && \
     apt-get update && \
-    apt-get install nodejs npm python3 python3-pip -y && \
+    apt-get install python3 python3-pip curl -y && \
     pip install css-html-js-minify
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+RUN nvm use 18
