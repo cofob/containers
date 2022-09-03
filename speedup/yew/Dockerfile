@@ -7,8 +7,7 @@ RUN rustup target add wasm32-unknown-unknown && \
     mv trunk /bin && \
     apt-get update && \
     apt-get install python3 python3-pip curl -y && \
-    pip install css-html-js-minify
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-RUN export NVM_DIR="$HOME/.nvm" && \
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-    nvm install 18
+    pip install css-html-js-minify && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
+    apt-get update && \
+    apt install nodejs npm -y
