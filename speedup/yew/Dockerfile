@@ -13,6 +13,7 @@ RUN rustup target add wasm32-unknown-unknown && \
     apt install nodejs -y && \
     git clone https://git.frsqr.xyz/firesquare/firesquare.ru-rs.git repo && \
     cd repo && \
+    npm i && \
     trunk build --release && \
     cd .. && \
     rm -rf repo
