@@ -1,11 +1,9 @@
 #!/bin/bash
-git clone https://github.com/boringproxy/boringproxy
+git clone https://github.com/cofob/boringproxy
 cd boringproxy
 
 sudo apt-get update
 sudo apt-get install inkscape -y
-
-cp -f ../Dockerfile .
 
 docker build -t cofob/boringproxy .
 docker tag cofob/boringproxy ghcr.io/cofob/boringproxy
