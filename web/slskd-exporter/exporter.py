@@ -381,6 +381,8 @@ def main():
 
     MetricsHandler.DB_PATH = Path(args.db).expanduser().resolve()
 
+    print("Starting")
+
     httpd = ThreadingHTTPServer((args.listen, args.port), MetricsHandler)
     try:
         httpd.serve_forever()

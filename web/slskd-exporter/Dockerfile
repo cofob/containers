@@ -5,4 +5,4 @@ COPY exporter.py /app/exporter.py
 
 EXPOSE 8000
 
-ENTRYPOINT ["python", "/app/exporter.py"]
+ENTRYPOINT ["python3", "/app/exporter.py"]
