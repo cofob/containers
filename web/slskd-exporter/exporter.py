@@ -1,21 +1,4 @@
 #!/usr/bin/env python3
-"""
-slskd Prometheus exporter (standard-library only)
-
-Behavior:
-- Opens the SQLite DB fresh on every /metrics request, reads Transfers, then closes.
-- Exposes Prometheus text format at /metrics.
-
-Exports:
-- slskd_transfer_bytes_total{direction="upload|download"} (successful completed transfers)
-- slskd_transfer_completed_total{direction="..."} (count of successful completed transfers)
-- slskd_transfer_failed_total{direction="..."} (count of completed but not succeeded)
-- slskd_transfer_average_speed_bytes_per_second{direction="..."} (avg over successful completed transfers)
-- slskd_transfer_user_bytes_total{direction="...",user="..."} (per user bytes, successful+completed)
-- slskd_transfer_error_total{direction="...",error="..."} (failed counts by error category)
-- Exporter self-metrics: scrape duration, success, last scrape timestamp
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -24,7 +7,6 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple, Union
-
 
 STATE_FLAGS = [
     "None",
@@ -124,11 +106,11 @@ def compute_stats(
         "old_db_format": 0,
         "upload": {
             "bytes": 0,
-            "completed": 0,  # successful+completed files
-            "failed": 0,  # completed but not succeeded
-            "speed_sum": 0.0,  # sum avg speeds for successful+completed
-            "users": {},  # user -> bytes
-            "errors": {},  # error -> count
+            "completed": 0,
+            "failed": 0,
+            "speed_sum": 0.0,
+            "users": {},
+            "errors": {},
         },
         "download": {
             "bytes": 0,
@@ -148,11 +130,11 @@ def compute_stats(
         stats["old_db_format"] = 1
 
     for username, direction, size, state, avg_speed, error in transfers_list:
-        if isinstance(state, str):
-            flags = parse_state_old(state)
-        else:
-            flags = parse_state_bitmask(int(state))
-
+        flags = (
+            parse_state_old(state)
+            if isinstance(state, str)
+            else parse_state_bitmask(int(state))
+        )
         if "Completed" not in flags:
             continue
 
@@ -160,10 +142,11 @@ def compute_stats(
         bucket = stats["upload"] if direction == "Upload" else stats["download"]
 
         if succeeded:
-            bucket["bytes"] += int(size)
+            s = int(size)
+            bucket["bytes"] += s
             bucket["completed"] += 1
             bucket["speed_sum"] += float(avg_speed or 0.0)
-            bucket["users"][username] = bucket["users"].get(username, 0) + int(size)
+            bucket["users"][username] = bucket["users"].get(username, 0) + s
         else:
             bucket["failed"] += 1
             se = shorten_error(error)
@@ -172,15 +155,11 @@ def compute_stats(
     return stats
 
 
-def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
-    """
-    Opens DB, scrapes Transfers, closes DB, then returns (metrics_text, success_flag).
-    """
+def scrape_db_and_build_metrics(db_path: Path, user_min_bytes: int) -> Tuple[str, int]:
     start = time.time()
     success = 1
     out: List[str] = []
 
-    # Self-metrics headers
     out.append(
         help_and_type(
             "Time spent scraping the slskd database.",
@@ -209,7 +188,6 @@ def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
                 f"DB path does not exist or is not a file: {db_path}"
             )
 
-        # Open fresh connection per scrape
         conn = sqlite3.connect(str(db_path), timeout=5)
         try:
             if not is_valid_transfers_db(conn):
@@ -218,12 +196,10 @@ def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
                 )
             transfers = fetch_transfers(conn)
         finally:
-            # Always close connection after each scrape
             conn.close()
 
         stats = compute_stats(transfers)
 
-        # Metric headers
         out.append(
             help_and_type(
                 "1 if slskd transfers DB is in old format (State stored as TEXT).",
@@ -261,7 +237,7 @@ def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
         )
         out.append(
             help_and_type(
-                "Bytes transferred per user for successful completed transfers.",
+                "Bytes transferred per user for successful completed transfers (exported only for users with bytes >= user_min_bytes).",
                 "slskd_transfer_user_bytes_total",
                 "counter",
             )
@@ -273,9 +249,16 @@ def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
                 "counter",
             )
         )
+        out.append(
+            help_and_type(
+                "Minimum bytes threshold for exporting per-user series.",
+                "slskd_exporter_user_min_bytes",
+                "gauge",
+            )
+        )
 
-        # Values
         out.append(metric_line("slskd_transfers_db_old_format", stats["old_db_format"]))
+        out.append(metric_line("slskd_exporter_user_min_bytes", int(user_min_bytes)))
 
         for direction_key, direction_label in (
             ("upload", "upload"),
@@ -303,6 +286,7 @@ def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
                     {"direction": direction_label},
                 )
             )
+
             avg = 0.0
             if d["completed"] > 0 and d["speed_sum"] > 0:
                 avg = float(d["speed_sum"]) / float(d["completed"])
@@ -314,14 +298,16 @@ def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
                 )
             )
 
+            # Per-user bytes: filter users below threshold to reduce cardinality
             for user, b in d["users"].items():
-                out.append(
-                    metric_line(
-                        "slskd_transfer_user_bytes_total",
-                        int(b),
-                        {"direction": direction_label, "user": user},
+                if int(b) >= user_min_bytes:
+                    out.append(
+                        metric_line(
+                            "slskd_transfer_user_bytes_total",
+                            int(b),
+                            {"direction": direction_label, "user": user},
+                        )
                     )
-                )
 
             for err, c in d["errors"].items():
                 out.append(
@@ -347,6 +333,7 @@ def scrape_db_and_build_metrics(db_path: Path) -> Tuple[str, int]:
 
 class MetricsHandler(BaseHTTPRequestHandler):
     DB_PATH: Path = Path("./transfers.db")
+    USER_MIN_BYTES: int = 1024**3  # 1 GiB default
 
     def do_GET(self):  # noqa: N802
         if self.path not in ("/metrics", "/metrics/"):
@@ -356,7 +343,7 @@ class MetricsHandler(BaseHTTPRequestHandler):
             self.wfile.write(b"Not Found\n")
             return
 
-        body, ok = scrape_db_and_build_metrics(self.DB_PATH)
+        body, ok = scrape_db_and_build_metrics(self.DB_PATH, self.USER_MIN_BYTES)
         self.send_response(200 if ok else 500)
         self.send_header("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
@@ -377,11 +364,16 @@ def main():
     )
     p.add_argument("--listen", default="0.0.0.0", help="Listen address")
     p.add_argument("--port", type=int, default=8000, help="Listen port")
+    p.add_argument(
+        "--user-min-bytes",
+        type=int,
+        default=1024**3,
+        help="Export per-user series only if user bytes >= this threshold (default: 1073741824 = 1 GiB).",
+    )
     args = p.parse_args()
 
     MetricsHandler.DB_PATH = Path(args.db).expanduser().resolve()
-
-    print("Starting")
+    MetricsHandler.USER_MIN_BYTES = int(args.user_min_bytes)
 
     httpd = ThreadingHTTPServer((args.listen, args.port), MetricsHandler)
     try:
