@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Builds and installs the binary into /go/bin
-RUN go install github.com/mark3labs/mcp-filesystem-server@latest
+RUN go install github.com/cofob/mcp-filesystem-server@latest
 
 # --- Runtime image (Node) ---
 FROM node:22-bookworm-slim
