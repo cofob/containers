@@ -1,4 +1,3 @@
-# --- Build mcp-filesystem-server (Go) ---
 FROM golang:1-bookworm AS mcp_fs_builder
 
 # go install fetches from VCS; git + ca-certs avoid common failures
